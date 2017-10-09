@@ -1,0 +1,11 @@
+<p>
+  i am boy
+</p>
+
+<app-girl (message)="get_message($event)" [(ngModel)]="gift">
+
+</app-girl>
+
+<input [(ngModel)]="gift">
+
+<button (click)="change_gift()"> 切换礼物</button>
