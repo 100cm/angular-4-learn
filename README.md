@@ -492,7 +492,7 @@ TemplateRef: 容器内部元素。
 ckeditor_config.ts为配置文件。
 直接复制官方的即可。
 
-```
+```js
 export const ckeditor_config = {
   language: 'zh-CN',
   toolbar: [
@@ -556,7 +556,7 @@ export const ckeditor_config = {
 
 下面打开我们的inline-ckeditor.directive.ts
 
-```
+```js
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from "@angular/forms";
 import {Injectable, Directive, ElementRef, Input, Output, EventEmitter, forwardRef, Provider} from '@angular/core';
 import {ckeditor_config} from "./ckeditor_config";
