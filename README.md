@@ -478,7 +478,7 @@ TemplateRef: 容器内部元素。
 当然也可以自行根据设置a的值去判断是否创建。
 
 
-####现在我们自己写一个指令。ckeditor的实例化指令。
+<h3>现在我们自己写一个指令。ckeditor的实例化指令。</h3>
 
 首先引入ckeditor。这里我们用cdn引入。
 在index.html 中引入。
