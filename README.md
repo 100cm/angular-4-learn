@@ -1,4 +1,4 @@
-# 学习angular ^2
+# 学习并且进阶angular ^2
 
 
 ##起步
@@ -348,8 +348,52 @@ boy.component.html:
 ### 章节列表
 
 ##### 2.服务
-###### 1.1服务注入
-###### 1.2实际场景介绍
+###### 2.1服务注入
+###### 2.2实际场景介绍
+
+
+service 在java中是一个很常见的概念。大部分javaer 都写过service层。这也是项目中必不可少的一个层。
+
+####2.1 服务，inject的概念
+
+对于大部分前端开发者而言。没有依赖注入的概念。这里我们解释一下为什么要使用依赖注入。或者说有什么好处。
+
+对于angular 2 + 而言。服务的注入（依赖注入）对于我们解决实际问题是有很大的帮助的
+
+举例：
+
+需求：导航栏要跟着路由进行 增减active 样式。
+解决：设置global-service。 <b>添加 currentUrl 变量。在最外层路由的组件(假设是AppComponent)中。注入global-service, OnInit() hook 中 监听路由切换。设置注入的gloabl-service的 currentUrl</b>。
+在导航的组件（假设是NavigateComponent）中,同样注入global-service 
+
+我们写一段伪代码
+
+```html
+<ul>
+<li class="{global_service.currentUrl=='/' ? 'active' : 'un_active'}">首页</li>
+</ul>
+
+```
+
+由于注入的global-service 在AppComponent 和  NavigateComponent 是同一个实例。所以无论哪一方改变了值。不同的组件都会及时响应值的改变。
+<br>
+以上是最简单的服务注入的例子。
+
+2.2 服务的使用的实际场景。
+
+在上一小章节我们介绍了一个很难简单的例子。当然也可以通过其他方式实现。如组件值传递之类的，实现方式有很多。因人而异。
+下面介绍一些其他的实际场景
+
+<li>1.目前官方文档中的例子，请求接口。将接口请求方法放入service中。不同组件注入调用。减少对象创建开销（大部分1个）。
+<li>2.共享一些全局变量。控制某些组件状态，如loading。notifycation
+<li>3.做一些页面结构，通用业务处理。如 动态组件渲染。日志等。
+
+
+关于如何注入。如何编写service，更多关于服务的细节官方文档已经很详细的说明。不再赘述。这部分只讲实际应用。
+
+----
+
+
 
 ### 章节列表
 
@@ -357,6 +401,341 @@ boy.component.html:
 ###### 1.1自定义指令
 ###### 1.2ckeditor实际应用指令
 ###### 1.3host listener
+
+指令的用途...实在是太有用了。甚至有用到我都不想用组件(Component)了。
+
+指令分两种。一种是结构型指令。一种是属性型指令。
+
+属性型指令比较简单。这里盗用官方的例子。
+
+```
+<p appGreen>把我变绿色</p>
+
+```
+
+对应的指令类。
+
+```
+import { Directive, ElementRef, Input } from '@angular/core';
+
+@Directive({ selector: '[appGreen]' })
+export class GreenDirective {
+    constructor(el: ElementRef) {
+       el.nativeElement.style.backgroundColor = 'green';
+    }
+}
+
+```
+
+<ol>
+<li>
+<p translation-result=""><code><a href="http://www.angular.cn/api/core/Directive" class="code-anchor">Directive</a></code>提供<code>@<a href="api/core/Directive" class="code-anchor">Directive</a></code>装饰器功能。  </p>
+
+</li>
+<li>
+<p translation-result="">   <code><a href="http://www.angular.cn/api/core/ElementRef" class="code-anchor">ElementRef</a></code><a href="guide/dependency-injection">注入</a>到指令构造函数中。这样代码就可以访问 DOM 元素了。<br>
+</p>
+</li>
+<li>
+<p translation-result=""><code><a href="http://www.angular.cn/api/core/Input" class="code-anchor">Input</a></code>将数据从绑定表达式传达到指令中。</p>
+</li>
+</ol>
+
+
+我们跟着官方做完了第一个自定义指令。
+
+现在讲下结构型指令
+结构型指令主要有三个东西  
+
+首先是构造器中的  <b>TemplateRef  ViewContainerRef</b>
+
+ViewContainerRef: 视图容器引用。在这里可以理解为加指令的外部容器。 <br>
+TemplateRef: 容器内部元素。
+
+怎么用结构型指令呢
+官方文档有详细例子。这里我们只说重点：
+
+
+```
+@Input set what_the_fuck(value){
+	viewContainer.createEmbeddedView(templateRef)
+} 
+
+```
+
+这里在指令中接受set 值。 
+
+```
+<div  what_the_fuck = 'a' >
+	<p>我爱学习</p>
+</div>
+
+```
+
+这里看到的效果是不论如何都会创建 <code>`<p>我爱学习</p>`</code> 的html的
+
+
+当然也可以自行根据设置a的值去判断是否创建。
+
+
+现在我们自己写一个指令。ckeditor的实例化指令。
+
+首先引入ckeditor。这里我们用cdn引入。
+在index.html 中引入。
+
+```
+  <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
+```
+
+创建 inline-ckeditor.directive.ts，ckeditor_config.ts
+
+ckeditor_config.ts为配置文件。
+直接复制官方的即可。
+
+```
+export const ckeditor_config = {
+  language: 'zh-CN',
+  toolbar: [
+    {name: 'styles', items: ['Font', 'FontSize']},
+    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike']},
+    {name: 'colors', items: ['TextColor', 'BGColor']},
+    {name: 'align', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+
+  customConfig: '',
+
+  removePlugins: 'image',
+
+
+  height: 80,
+
+  stylesSet: [
+    /* Inline Styles */
+    {name: 'Marker', element: 'span', attributes: {'class': 'marker'}},
+    {name: 'Cited Work', element: 'cite'},
+    {name: 'Inline Quotation', element: 'q'},
+    /* Object Styles */
+    {
+      name: 'Special Container',
+      element: 'div',
+      styles: {
+        padding: '5px 10px',
+        background: '#eee',
+        border: '1px solid #ccc'
+      }
+    },
+    {
+      name: 'Compact table',
+      element: 'table',
+      attributes: {
+        cellpadding: '5',
+        cellspacing: '0',
+        border: '1',
+        bordercolor: '#ccc'
+      },
+      styles: {
+        'border-collapse': 'collapse'
+      }
+    },
+    {name: 'Borderless Table', element: 'table', styles: {'border-style': 'hidden', 'background-color': '#E6E6FA'}},
+    {name: 'Square Bulleted List', element: 'ul', styles: {'list-style-type': 'square'}},
+    /* Widget Styles */
+    // We use this one to style the brownie picture.
+    {name: 'Illustration', type: 'widget', widget: 'image', attributes: {'class': 'image-illustration'}},
+    // Media embed
+    {name: '240p', type: 'widget', widget: 'embedSemantic', attributes: {'class': 'embed-240p'}},
+    {name: '360p', type: 'widget', widget: 'embedSemantic', attributes: {'class': 'embed-360p'}},
+    {name: '480p', type: 'widget', widget: 'embedSemantic', attributes: {'class': 'embed-480p'}},
+    {name: '720p', type: 'widget', widget: 'embedSemantic', attributes: {'class': 'embed-720p'}},
+    {name: '1080p', type: 'widget', widget: 'embedSemantic', attributes: {'class': 'embed-1080p'}}
+  ]
+}
+
+```
+
+上面的我们做了一些简化。留一些基础的就可以。
+
+下面打开我们的inline-ckeditor.directive.ts
+
+```
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from "@angular/forms";
+import {Injectable, Directive, ElementRef, Input, Output, EventEmitter, forwardRef, Provider} from '@angular/core';
+import {ckeditor_config} from "./ckeditor_config";
+
+const CKEDITOR = window['CKEDITOR']
+CKEDITOR.disableAutoInline = true;
+
+@Directive({
+  selector: '[inline-ckeditor]',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InlineCkeditorDirective),
+      multi: true
+    }
+  ]
+})
+export class InlineCkeditorDirective {
+
+
+  writeValue(obj: any): void {
+    this.content = obj
+    if (this.editor) {
+      this.editor.setData(this.content)
+    }
+    this.onChange(obj)
+  }
+
+  onChange: any = Function.prototype;
+  onTouched: any = Function.prototype;
+
+
+  registerOnChange(fn: (_: any) => {}): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => {}): void {
+    this.onTouched = fn;
+  }
+
+  constructor(public elm: ElementRef) {
+
+  }
+
+  @Input('id') id: string = ''
+
+  @Input('content') content: string = ''
+
+  editor: any
+
+  editor_init = false
+
+  @Output() content_change: EventEmitter<string> = new EventEmitter<string>()
+
+  ngAfterViewChecked() {
+
+  }
+
+  ngOnInit() {
+    this.create_editor()
+  }
+
+  ngAfterViewInit() {
+
+  }
+
+  create_editor() {
+
+    let el = this.elm.nativeElement
+    setTimeout(() => {
+      let editor = CKEDITOR.inline(el, ckeditor_config);
+      this.editor = editor
+      this.editor.setData(this.content)
+      editor.on('change', (evt) => {
+        this.content = evt.editor.getData()
+        this.onChange(this.content)
+        this.content_change.emit(this.content)
+      });
+
+    }, 200)
+    this.editor_init = true
+  }
+
+  ngOnDestroy() {
+    if (this.editor) {
+      this.editor.destroy()
+    }
+  }
+}
+
+```
+
+这里用到了我们第一章的知识。 自定义双向绑定，对的 你没看错，不管是组件 还是指令。都能使用这项设定。
+
+下面我们会一一解释下运作。
+
+关于双向绑定的部分看第一章。这里不做赘述。
+
+首先 核心部分 create_editor() 函数。
+
+```js
+  create_editor() {
+	<!--拿到当前的元素-->	
+    let el = this.elm.nativeElement
+<!--    这里为什么要设置延时呢。由于content数据是异步的，不同的设置值 可能会导致组件的生命周期发出警报。有些值得检测会判定为已经检测过-->
+    setTimeout(() => {
+      let editor = CKEDITOR.inline(el, ckeditor_config);
+      this.editor = editor
+      this.editor.setData(this.content)
+      <!--添加change函数-->
+      editor.on('change', (evt) => {
+        this.content = evt.editor.getData()
+        this.onChange(this.content)
+        this.content_change.emit(this.content)
+      });
+
+    }, 200)
+    <!--设置初始化成功-->
+    this.editor_init = true
+  }
+
+```
+
+整个过程很简单。就是调用下ckeditor的api 也没什么复杂的。
+然后看看我们的使用。
+
+```
+<div inline-ckeditor contenteditable="true" [(ngModel)]="ckeditor_content"></div>
+```
+
+当然。这里的选择器也可以以类名做选择 如 selector: '.inline-ckeditor'
+
+
+至此 这个指令就可以使用。 命令某个带inline-ckeditor class的dom元素 变成 ckeditor。
+
+
+#### host listener 和 hostbinding
+
+是一种事件监听和值绑定。这里我们也可以写在 同样的ckeditor的指令中
+
+
+```
+  _active: boolean = false
+
+
+//点击
+  @HostListener('click') handleClick() {
+    this.setActive()
+  }
+
+//光标移出
+  @HostListener('blur') handleBlur() {
+    this._active = false
+  }
+
+//选中
+  @HostListener('focus') handleFocus() {
+    this._active = true
+  }
+
+
+  setActive() {
+    this._active = true
+  }
+
+//设置active class
+  @HostBinding('class.active')
+  get active() {
+    return this._active
+  }
+  
+```
+
+这里主要的作用是 在选中和点击的时候。该dom元素增加一个active的class。可以用来标记出哪个是正在使用中的ckeditor。
+
+
+有人更愿意用组件。有人更愿意做指令。其实两者缺一不可。个人觉得复杂的业务。用组件(Component)，一些单一的。类似于修饰用到组件，可以用指令去替代。
+
+----
 
 
 
