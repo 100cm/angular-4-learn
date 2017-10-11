@@ -13,10 +13,11 @@ import { HeroComponent } from './examples/dynamic-component/hero/hero.component'
 import { GayAndHeroComponent } from './examples/dynamic-component/gay-and-hero/gay-and-hero.component';
 import {DynamicSectionService} from "./examples/dynamic-component/dynamic-section.service";
 import { SectionWrapperComponent } from './examples/dynamic-component/section-wrapper/section-wrapper.component';
+import { CkeditorExampleComponent } from './examples/ckeditor/ckeditor-example/ckeditor-example.component';
 
 @NgModule({
   declarations: [
-    AppComponent, InlineCkeditorDirective, BoyComponent, GirlComponent, GayComponent, HeroComponent, GayAndHeroComponent, SectionWrapperComponent
+    AppComponent, InlineCkeditorDirective, BoyComponent, GirlComponent, GayComponent, HeroComponent, GayAndHeroComponent, SectionWrapperComponent, CkeditorExampleComponent
   ],
   imports: [
     routing,
