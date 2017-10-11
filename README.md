@@ -1,7 +1,7 @@
 # 学习并且进阶angular ^2
 
 
-##起步
+## 起步
 
 ### 建立项目
 
@@ -182,7 +182,7 @@ I am girl , i got the gift 电动棒
 
 html:
 
-```
+```html
 <p>
   I am girl , i got the gift {{gift}}
 </p>
@@ -254,7 +254,7 @@ export class GirlComponent implements OnInit {
 这里我们先要注入一个 NG_VALUE_ACCESSOR
 并且要使用现有的component
 
-```
+```js
 @Component({
   selector: 'app-girl',
   templateUrl: './girl.component.html',
@@ -279,7 +279,7 @@ multi:     允许多个提供者使用一个一个共同的令牌
 
 然后再继承一些方法。
 
-```
+```js
 //写入值
   writeValue(obj: any): void {
     this.gift = obj
@@ -354,7 +354,7 @@ boy.component.html:
 
 service 在java中是一个很常见的概念。大部分javaer 都写过service层。这也是项目中必不可少的一个层。
 
-####2.1 服务，inject的概念
+#### 2.1 服务，inject的概念
 
 对于大部分前端开发者而言。没有依赖注入的概念。这里我们解释一下为什么要使用依赖注入。或者说有什么好处。
 
@@ -483,7 +483,7 @@ TemplateRef: 容器内部元素。
 首先引入ckeditor。这里我们用cdn引入。
 在index.html 中引入。
 
-```
+```js
   <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
 ```
 
