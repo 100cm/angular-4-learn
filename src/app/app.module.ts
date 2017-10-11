@@ -8,10 +8,15 @@ import {FormsModule} from "@angular/forms";
 import {BoyComponent} from './examples/chapter-1/boy/boy.component';
 import {GirlComponent} from './examples/chapter-1/girl/girl.component';
 import {routing} from "../routes/cms.routes";
+import { GayComponent } from './examples/dynamic-component/gay/gay.component';
+import { HeroComponent } from './examples/dynamic-component/hero/hero.component';
+import { GayAndHeroComponent } from './examples/dynamic-component/gay-and-hero/gay-and-hero.component';
+import {DynamicSectionService} from "./examples/dynamic-component/dynamic-section.service";
+import { SectionWrapperComponent } from './examples/dynamic-component/section-wrapper/section-wrapper.component';
 
 @NgModule({
   declarations: [
-    AppComponent, InlineCkeditorDirective, BoyComponent, GirlComponent
+    AppComponent, InlineCkeditorDirective, BoyComponent, GirlComponent, GayComponent, HeroComponent, GayAndHeroComponent, SectionWrapperComponent
   ],
   imports: [
     routing,
@@ -19,7 +24,8 @@ import {routing} from "../routes/cms.routes";
     BrowserModule,
     FormsModule
   ],
-  providers: [],
+  entryComponents:[GayComponent,HeroComponent],
+  providers: [ DynamicSectionService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
