@@ -1061,6 +1061,122 @@ hero:
 ----
 
 
+### Angular CLI 相关实践
+
+#### 跨域解决
+
+跨域是浏览器行为。解决方式主要有以下两种
+
+##### 1.本机前后端项目端口代理。下面以angular-cli 为例：
+
+在跟项目下创建 proxy.json
+
+以java项目为例 大部分tomcat 端口开放在8080
+
+并且项目接口均以/api 开头。
+
+proxy.json
+
+```json
+{
+  "/api/*": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "logLevel": "debug"
+  }
+  }
+```
+
+添加完。保存。
+ 
+然后中断我们的项目。在我们的启动命令里 添加一条参数
+
+```
+ "start": "ng serve --proxy-config proxy.json"
+```
+注意。这里仅在开发环境下添加配置。生产环境不需要。
+
+如果是 自己做的webpack配置。目前应该很少了吧。官方都不建议了。
+但是还是给出一份。<a href="https://github.com/icepoint0/angular2-webpack-config">webpack配置</a>
+
+现在讲讲生产环境 即部署环境如何处理。这里涉及到一些服务器知识了。
+有兴趣的朋友可以了解下。不行就交给运维处理。
+
+首先。以 **Nginx** 作为我们的server。 
+
+
+```json
+server{
+...
+location ^~ /api/ {
+                proxy_pass http://127.0.0.1:8080;
+            root /www/public;
+        }
+        ...
+        }
+```
+
+在location 这里加个代理即可。
+
+至于前端项目部署在哪个端口。自行考虑。
+
+##### 2.后端项目做修改。
+
+大部分前端人员比较懒。或者说不懂后端。没关系。交给后端去解决跨域吧
+
+项目设置response 头，即可。具体细节不做赘述
+
+
+### h5移动端开发以及微信配置相关问题
+
+
+这里讲的是微信页面。非web app。
+
+#### 1.微信认证跳转。
+
+微信认证跳转由于需要验证域名。但是我们的域名又是localhost这种形式。那怎么办呢。
+
+----- **修改host**
+
+这里推荐大家一个好用的工具
+ <a href="https://github.com/oldj/SwitchHosts">swicth host</a>
+ 
+ 修改完host 之后。启动项目。会发现报错了。
+ 
+ ```
+ invalid host header
+ ```
+ 
+ 是的 angular-cli 会check 我们的host。没关系 这时候我们再在启动命令里加一行
+ 
+ ```
+ --disable-host-check
+ ```
+ 
+ 这样就可以了。
+ 
+ **记得要把端口改为80.微信连带端口也会一起检测的。**
+ 
+ 接下来就是要真🐔访问我们的项目作为测试。
+ 
+ 这里推荐一款软件 **<a href="https://www.charlesproxy.com/">charles</a>**
+ 
+ 👍 👍 👍 👍 👍 👍 👍 👍 👍
+ 
+ 很赞。未激活每次只有30分钟的寿命。但是也够测试了。不够再重新打开就行
+ 
+ 记得手机代理端口填写8888 在同一局域网内 用 
+ 
+ `ipconfig` / `ifconfig` 检测下当前pc的局域网分配的ip地址就行
+ 
+ 
+ 到这里我们都配置了。相当于在正式环境的本机开发微信移动端了。这种感觉
+ 
+ 😊😊😊😊😊😊😊
+ 
+ 
+
+
 
 
 
